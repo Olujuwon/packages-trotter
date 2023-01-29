@@ -39,8 +39,6 @@ substitutions:
   _FILE_ENCODING: gcp
   _FILE_PATH: /var/lib/dpkg/status
   _FILE_PATH_ALT: sample.txt
-  _PORT: 8080
-  _VERSION: 0.0.1
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
