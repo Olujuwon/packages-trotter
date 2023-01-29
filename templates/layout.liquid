@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
+    <style>
+        body{
+            width: 100%;
+            max-width: 1920px;
+            margin: 0 auto;
+            font-size: small;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Poppins', sans-serif;
+        }
+        h1{
+            font-size: 2em;
+        }
+        .title{
+            font-weight: 500;
+        }
+        header{
+            padding: 2em;
+            height: 40px;
+            margin-bottom: 1em;
+            display: flex;
+            justify-content: space-between;
+        }
+        header span{
+            display: flex;
+            justify-content: space-between;
+            width: 80px;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        .main{
+            width: 100%;
+            padding: 2em;
+            font-size: 1.2em;
+            position: relative;
+            min-height: 100vh;
+        }
+        li{
+            padding: 10px;
+        }
+        .package-title{
+            font-size: 1.5em;
+            font-weight: 900;
+        }
+
+        .package-description{
+            width: 50%;
+        }
+
+        footer{
+            background-color: antiquewhite;
+            padding: 2em;
+            display: flex;
+            justify-content: space-between;
+            /*position: fixed;
+            bottom: 0;
+            width: 80%;*/
+            height: 40px;
+        }
+    </style>
+    <title>{{title}}</title>
+</head>
+<body>
+<header >
+    <h1 class="title">Debian/Ubuntu Packages Trotter</h1>
+    <span>
+        <p class="version-title">version</p>
+        <p class="version">{{version}}</p>
+    </span>
+</header>
+<div class="main">
+    {% block %}{% endblock %}
+</div>
+<footer>
+    <p class="copyright">&COPY; 2023 All rights reserved</p>
+    <span class="links">
+        <a href="/docs">Documentation</a>
+    </span>
+</footer>
+</body>
+</html>

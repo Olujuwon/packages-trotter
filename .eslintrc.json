@@ -1,0 +1,35 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": [
+        "standard-with-typescript",
+        "prettier"
+    ],
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "project": ["tsconfig.json"]
+    },
+    "rules": {
+      "@typescript-eslint/ban-ts-comment": 0,
+      "@typescript-eslint/explicit-function-return-type": 0,
+      "@typescript-eslint/no-base-to-string": 0,
+      "@typescript-eslint/no-var-requires": 0,
+      "@typescript-eslint/return-await": 0,
+      "@typescript-eslint/strict-boolean-expressions": 0,
+      "@typescript-eslint/prefer-ts-expect-error": 0,
+      "array-callback-return": 0,
+      "eslint-disable-next-line": 0,
+      "prefer-regex-literals": 0,
+      "max-len": [
+        "error",
+        {
+          "code": 100
+        }
+      ]
+    }
+}

@@ -1,0 +1,12 @@
+{% layout "layout" %}
+{% block %}
+<ul>
+    {% for osPackage in data %}
+        <li><a href="packages/{{ osPackage.name -}}">{{ osPackage.name }}</a></li>
+    {% else %}
+        The collection is empty.
+    {% endfor %}
+</ul>
+{% endblock %}
+
+
