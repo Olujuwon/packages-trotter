@@ -1,0 +1,27 @@
+{% layout "layout" %}
+{% block %}
+    <div class="package-container">
+        <h3 class="package-title">{{ data.name }}</h3>
+        <p class="package-description">{{ data.description }}</p>
+        <span class="package-dependencies">{{ data.dependencies }}</span>
+            Dependencies :
+            <span>
+               {% for dep in dependencies %}
+                   <p><a href="/packages/{{dep}}">{{ dep }}</a></p>
+               {% else %}
+                   This package has no dependencies
+               {% endfor %}
+            </span>
+        </span>
+        <span class="package-dependencies">
+            Reverse dependencies :
+            <span>
+               {% for reDep in reverseDependencies %}
+                   <p><a href="/packages/{{reDep}}">{{ reDep }}</a></p>
+               {% else %}
+                   This package has no reverse dependencies
+               {% endfor %}
+            </span>
+        </span>
+    </div>
+{% endblock %}
