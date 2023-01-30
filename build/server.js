@@ -32,11 +32,6 @@ const dotenv = __importStar(require("dotenv"));
 const view_1 = __importDefault(require("@fastify/view"));
 const packages_1 = __importDefault(require("./routes/packages"));
 dotenv.config();
-// Init fastify
-const fastify = (0, fastify_1.default)({
-    logger: true,
-    trustProxy: true,
-});
 // Init template engine
 const engine = new liquidjs_1.Liquid({
     root: "templates",
@@ -48,36 +43,35 @@ const engine = new liquidjs_1.Liquid({
     trimOutputRight: true,
     cache: true,
 });
-// check if environment is in GCP, this is used to determine the host
-const IS_GOOGLE_CLOUD_RUN = process.env.K_SERVICE !== "false";
-const host = IS_GOOGLE_CLOUD_RUN ? "0.0.0.0" : "localhost";
-const port = process.env.PORT ? Number(process.env.PORT) : 8080;
-// register template engine to fastify using @fastify/view plugin
-void fastify.register(view_1.default, {
-    engine: { liquid: engine },
-    propertyName: "view",
-});
-// Default route
-fastify.get("*", (req, reply) => {
-    return reply.view("/templates/404.liquid", {});
-});
-// Route to Docs
-fastify.get("/docs", (req, reply) => {
-    return reply.view("/templates/docs.liquid", {});
-});
-// OS Packages related routes
-void fastify.register(packages_1.default);
-/**
- * Starts and listens to server
- * @returns Promise<>
- */
-const start = async () => {
+function build() {
+    const fastify = (0, fastify_1.default)({ trustProxy: true });
+    return fastify;
+}
+async function start() {
+    const IS_GOOGLE_CLOUD_RUN = process.env.K_SERVICE !== "false";
+    const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+    const host = IS_GOOGLE_CLOUD_RUN ? "0.0.0.0" : "localhost";
     try {
-        await fastify.listen({ port, host });
+        const fastify = build();
+        void fastify.register(view_1.default, {
+            engine: { liquid: engine },
+            propertyName: "view",
+        });
+        // Default route
+        fastify.get("*", (req, reply) => {
+            return reply.view("/templates/404.liquid", {});
+        });
+        // OS Packages related routes
+        void fastify.register(packages_1.default);
+        const address = await fastify.listen({ port, host });
+        console.log(`Listening on ${address}`);
     }
     catch (err) {
-        fastify.log.error(err);
+        console.error(err);
         process.exit(1);
     }
-};
-void start();
+}
+module.exports = build;
+if (require.main === module) {
+    void start();
+}

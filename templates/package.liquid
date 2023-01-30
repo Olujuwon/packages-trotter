@@ -7,7 +7,7 @@
             Dependencies :
             <span>
                {% for dep in dependencies %}
-                   <p><a href="/packages/{{dep}}">{{ dep }}</a></p>
+                   <p><a href="/{{dep}}">{{ dep }}</a></p>
                {% else %}
                    This package has no dependencies
                {% endfor %}
@@ -17,7 +17,7 @@
             Reverse dependencies :
             <span>
                {% for reDep in reverseDependencies %}
-                   <p><a href="/packages/{{reDep}}">{{ reDep }}</a></p>
+                   <p><a href="/{{reDep}}">{{ reDep }}</a></p>
                {% else %}
                    This package has no reverse dependencies
                {% endfor %}

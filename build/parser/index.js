@@ -1,17 +1,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Parses data from OS packages status file
+ */
 class Parser {
-    parsedJson;
+    osPackagesParsedToJson;
     fileData;
+    /**
+     * Creates instance of a parser with file data.
+     * @param {fileData}
+     */
     constructor(fileData) {
         this.fileData = fileData;
-        this.parsedJson = [];
+        this.osPackagesParsedToJson = [];
     }
+    /**
+     * Removes version number, bracket and other special characters from extracted dependency string
+     * @param {str}
+     * @returns string
+     */
     sanitizeDependenciesString(str) {
         const regex = /\s*\(.*?\)\s*/g;
         return str.replace(regex, " ");
     }
-    searchAndSeperateText(regExp, flag, textToSearch) {
+    /**
+     * Extracts specified text from a given string using regex provided as param
+     * @param {regExp}
+     * @param {flag}
+     * @param {textToSearch}
+     * @returns string
+     */
+    searchAndExtractText(regExp, flag, textToSearch) {
         const initRegExp = new RegExp(regExp, flag);
         let executeRegExp = [];
         executeRegExp = initRegExp.exec(textToSearch);
@@ -19,38 +38,41 @@ class Parser {
             return "";
         return executeRegExp[1];
     }
-    parsePackageName(osPackage) {
-        return this.searchAndSeperateText("^Package:\\s(.*)", "g", osPackage);
-    }
-    parsePackageDescription(osPackage) {
-        return this.searchAndSeperateText("^Description:\\s(.+\\n(\\s.+\\n)*)", "m", osPackage);
-    }
-    parsePackageDependencies(osPackage) {
-        return this.sanitizeDependenciesString(this.searchAndSeperateText("^Depends:\\s(.*\\s+)", "m", osPackage));
-    }
-    // Todo break down to seperate/extract searching method
+    /**
+     * Searches parsed packages JSON checking, if a package A's name is found in another package B's
+     * depends field, package B is added to package A's reverseDepends field
+     *
+     * @returns Promise<void>
+     */
     async parsePackageReverseDependencies() {
-        for (let i = 0; i < this.parsedJson.length; i++) {
-            const currentPackage = this.parsedJson[i];
-            const packageReverseDependencies = [];
-            this.parsedJson.map((osPackage, index) => {
+        for (let i = 0; i < this.osPackagesParsedToJson.length; i++) {
+            const currentPackage = this.osPackagesParsedToJson[i];
+            const currentPackageReverseDependencies = [];
+            this.osPackagesParsedToJson.forEach((osPackage, index) => {
                 const { name, depends } = osPackage;
                 if (depends === "")
                     return;
                 if (depends.includes(currentPackage.name))
-                    packageReverseDependencies.push(name);
+                    currentPackageReverseDependencies.push(name);
             });
-            currentPackage.reverseDepends = packageReverseDependencies.join(" , ");
+            currentPackage.reverseDepends =
+                currentPackageReverseDependencies.join(" , ");
         }
     }
+    /**
+     * Splits fileData into array of strings, search and extract texts corresponding to specified
+     * fields (i.e Package, Description and Depends) of the source file
+     *
+     * @returns Promise<void>
+     */
     async parseOsPackageFields() {
         const osPackagestringToArray = this.fileData.split("\n\n");
         osPackagestringToArray.forEach((osPackage, index) => {
             const osPackageString = osPackage.toString();
-            const packageName = this.parsePackageName(osPackageString);
-            const packageDescription = this.parsePackageDescription(osPackageString);
-            const dependencies = this.parsePackageDependencies(osPackageString);
-            this.parsedJson.push({
+            const packageName = this.searchAndExtractText("^Package:\\s(.*)", "g", osPackageString);
+            const packageDescription = this.searchAndExtractText("^Description:\\s(.+\\n(\\s.+\\n)*)", "m", osPackageString);
+            const dependencies = this.sanitizeDependenciesString(this.searchAndExtractText("^Depends:\\s(.*\\s+)", "m", osPackageString));
+            this.osPackagesParsedToJson.push({
                 name: packageName,
                 description: packageDescription,
                 depends: dependencies,
@@ -58,7 +80,7 @@ class Parser {
             });
         });
         await this.parsePackageReverseDependencies();
-        return this.parsedJson;
+        return this.osPackagesParsedToJson;
     }
 }
 exports.default = Parser;
