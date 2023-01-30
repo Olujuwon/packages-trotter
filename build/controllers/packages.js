@@ -8,10 +8,10 @@ const parser_1 = __importDefault(require("../parser"));
 const filereader_1 = __importDefault(require("../filereader"));
 /**
  * Sorts parsed OS Packages alphabetically
- * @param osPackages <Array>
+ * @param {osPackages}
  * @returns IParsedJsonObject[]
  */
-const _sortPackagesAlhabetically = (osPackages) => {
+const _sortPackagesAlphabetically = (osPackages) => {
     return osPackages.sort((a, b) => {
         const nameA = a.name.toUpperCase();
         const nameB = b.name.toUpperCase();
@@ -30,6 +30,9 @@ const _sortPackagesAlhabetically = (osPackages) => {
  */
 const _readSystemFileAndParseToJson = async () => {
     const fileContent = await (0, filereader_1.default)();
+    if (typeof fileContent !== "string" && fileContent.error) {
+        throw new Error("Error reading file");
+    }
     const fileDataParser = new parser_1.default(fileContent.toString());
     return await fileDataParser.parseOsPackageFields();
 };
@@ -41,7 +44,7 @@ const _readSystemFileAndParseToJson = async () => {
 const getPackages = async (req, reply) => {
     try {
         const packagesParsed = await _readSystemFileAndParseToJson();
-        _sortPackagesAlhabetically(packagesParsed);
+        _sortPackagesAlphabetically(packagesParsed);
         return reply.view("/templates/index.liquid", {
             version: process.env.VERSION,
             title: "OS Installed Packages",
@@ -49,7 +52,9 @@ const getPackages = async (req, reply) => {
         });
     }
     catch (error) {
-        await reply.send({ error });
+        return reply.view("/templates/error.liquid", {
+            error,
+        });
     }
 };
 exports.getPackages = getPackages;
@@ -74,7 +79,9 @@ const getPackage = async (req, reply) => {
         });
     }
     catch (error) {
-        void reply.send({ error });
+        return reply.view("/templates/error.liquid", {
+            error,
+        });
     }
 };
 exports.getPackage = getPackage;
