@@ -1,10 +1,9 @@
 # [START cloudbuild_quickstart_build]
 steps:
-  - name: gcr.io/cloud-builders/docker
+  - name: 'gcr.io/cloud-builders/docker'
     args:
       - build
-      - '--no-cache'
-      - '-t'
+      - 'tag'
       - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
       - .
       - '-f'

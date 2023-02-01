@@ -77,6 +77,10 @@ logging out of the box, developer friendly and Typescript ready features. [Readm
 For rendering HTML user interface, `Liquidjs` is used. Liquid provides templates that are highly readable, fault-tolerant,
 with zero dependency and Typescript strict. [Readmore](https://liquidjs.com/index.html)
 
+## Testing
+
+Unit testing is done using `Node tap`. [Readmore](https://node-tap.org/)
+
 ## Design process
 
 A snapshot of notes and diagrams used in the system design process are shown below. 

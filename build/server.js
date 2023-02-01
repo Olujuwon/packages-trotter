@@ -59,7 +59,10 @@ async function start() {
         });
         // Default route
         fastify.get("*", (req, reply) => {
-            return reply.view("/templates/404.liquid", {});
+            return reply.view("/templates/404.liquid", {
+                version: process.env.VERSION,
+                title: "404",
+            });
         });
         // OS Packages related routes
         void fastify.register(packages_1.default);
