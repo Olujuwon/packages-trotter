@@ -16,13 +16,14 @@ const _readSystemFileAndParseToJson = async () => {
     let _path;
     let _encoding = process.env.FILE_ENCODING;
     const operatingSystem = node_os_1.default.type();
+    console.log("OS Type", operatingSystem);
     if (operatingSystem === "Linux")
-        _path = process.env.FILE_PATH;
+        _path = "sample.txt";
     else
-        _path = process.env.FILE_PATH_ALT;
+        _path = "sample.txt";
     const fileContent = await (0, filereader_1.default)(_path, _encoding);
     if (typeof fileContent !== "string" && fileContent.error) {
-        throw new Error("Error reading file");
+        throw new Error("Error reading file", fileContent.error);
     }
     return await (0, parser_1.default)(fileContent.toString());
 };
@@ -35,6 +36,7 @@ const getPackages = async (req, reply) => {
     const _version = process.env.VERSION;
     try {
         const packagesParsed = await _readSystemFileAndParseToJson();
+        console.log("Packages", packagesParsed[0]);
         return reply.view("/templates/index.liquid", {
             version: _version,
             title: "OS Installed Packages",
@@ -42,6 +44,7 @@ const getPackages = async (req, reply) => {
         });
     }
     catch (error) {
+        console.log("Packages Error", error);
         return reply.view("/templates/error.liquid", {
             error,
             version: _version,

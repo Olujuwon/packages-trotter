@@ -3,8 +3,8 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - build
-      - 'tag'
-      - 'gcr.io/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--tag'
+      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$SHORT_SHA'
       - '.'
       - '-f'
       - 'Dockerfile'
@@ -12,7 +12,7 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - 'gcr.io/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$SHORT_SHA'
     id: Push
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
@@ -21,7 +21,7 @@ steps:
       - update
       - $_SERVICE_NAME
       - '--platform=managed'
-      - '--image=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--image=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$SHORT_SHA'
       - >-
         --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID,$_LABELS
       - '--region=$_DEPLOY_REGION'
@@ -29,17 +29,18 @@ steps:
     id: Deploy
     entrypoint: gcloud
 images:
-  - 'gcr.io/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+  - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$SHORT_SHA'
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
 substitutions:
-  _ENV: gcp
-  _FILE_ENCODING: gcp
-  _FILE_PATH: /var/lib/dpkg/status
-  _FILE_PATH_ALT: sample.txt
+  _SERVICE_NAME: packages-trotter
+  _DEPLOY_REGION: europe-north1
+  _GCR_HOSTNAME: eu.gcr.io
+  _VERSION: 0.0.1
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
-  - real-time-chat-app-develop
+  - packages-trotter
+  - version_0.0.1
 # [END cloudbuild_quickstart_build]
