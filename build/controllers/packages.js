@@ -18,7 +18,7 @@ const _readSystemFileAndParseToJson = async () => {
     const operatingSystem = node_os_1.default.type();
     console.log("OS Type", operatingSystem);
     if (operatingSystem === "Linux")
-        _path = "/var/lib/dpkg/status";
+        _path = "sample.txt";
     else
         _path = "sample.txt";
     const fileContent = await (0, filereader_1.default)(_path, _encoding);
