@@ -4,10 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPackage = exports.getPackages = void 0;
-const parser_1 = __importDefault(require("../parser"));
 const filereader_1 = __importDefault(require("../filereader"));
-const utilities_1 = require("../utilities");
 const node_os_1 = __importDefault(require("node:os"));
+const parser_1 = __importDefault(require("../parser"));
 /**
  * Reads OS package file, parses data to JSON format
  *
@@ -25,8 +24,7 @@ const _readSystemFileAndParseToJson = async () => {
     if (typeof fileContent !== "string" && fileContent.error) {
         throw new Error("Error reading file");
     }
-    const fileDataParser = new parser_1.default(fileContent.toString());
-    return await fileDataParser.parseOsPackageFields();
+    return await (0, parser_1.default)(fileContent.toString());
 };
 /**
  * The handler method for index page, fetches OS packages, parses and display data in the UI
@@ -37,7 +35,6 @@ const getPackages = async (req, reply) => {
     const _version = process.env.VERSION;
     try {
         const packagesParsed = await _readSystemFileAndParseToJson();
-        (0, utilities_1._sortPackagesAlphabetically)(packagesParsed);
         return reply.view("/templates/index.liquid", {
             version: _version,
             title: "OS Installed Packages",

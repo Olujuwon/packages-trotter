@@ -46,8 +46,8 @@ uses the class Parser in the background.
 
 ## Parser
 
-A class that is initialized with the string value of the data contained in the status file. It exposes the API 
-`parseOsPackageFields` which does not take any params but returns a Promise that resolves with an array of OS packages.
+A module that exposes the API `parseOsPackageFields` takes `IParsedJsonObject[]` params and returns a Promise that 
+resolves with an array of alphabetically sorted OS packages object.
 
 #### Example data return from calling `parseOsPackageFields`
 
@@ -81,6 +81,22 @@ with zero dependency and Typescript strict. [Readmore](https://liquidjs.com/inde
 
 Unit testing is done using `Node tap`. [Readmore](https://node-tap.org/)
 
+Latest coverage report. 03.02.2023
+```
+------------------|---------|----------|---------|---------|-------------------
+File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+------------------|---------|----------|---------|---------|-------------------
+All files         |   96.26 |       90 |     100 |      96 |                   
+build/filereader |    87.5 |      100 |     100 |    87.5 |                   
+index.js        |    87.5 |      100 |     100 |    87.5 | 16                
+build/parser     |   97.87 |       90 |     100 |   97.82 |                   
+index.js        |   97.87 |       90 |     100 |   97.82 | 18                
+filereader       |   85.71 |      100 |     100 |   85.71 |                   
+index.ts        |   85.71 |      100 |     100 |   85.71 | 15                
+parser           |   97.77 |       90 |     100 |   97.43 |                   
+index.ts        |   97.77 |       90 |     100 |   97.43 | 21                
+------------------|---------|----------|---------|---------|-------------------`
+```
 ## Design process
 
 A snapshot of notes and diagrams used in the system design process are shown below. 

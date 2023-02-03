@@ -1,8 +1,8 @@
 import Parser, {type IParsedJsonObject} from "../parser";
 import readFileFromPath from "../filereader";
 import {type FastifyReply, type FastifyRequest} from "fastify";
-import {_sortPackagesAlphabetically} from "../utilities";
 import os from "node:os";
+import parseOsPackageFields from "../parser";
 
 /**
  * Reads OS package file, parses data to JSON format
@@ -21,8 +21,7 @@ const _readSystemFileAndParseToJson = async (): Promise<
     if (typeof fileContent !== "string" && fileContent.error) {
         throw new Error("Error reading file");
     }
-    const fileDataParser = new Parser(fileContent.toString());
-    return await fileDataParser.parseOsPackageFields();
+    return await parseOsPackageFields(fileContent.toString());
 };
 /**
  * The handler method for index page, fetches OS packages, parses and display data in the UI
@@ -33,7 +32,6 @@ export const getPackages = async (req: FastifyRequest, reply: FastifyReply) => {
     const _version = process.env.VERSION
     try {
         const packagesParsed = await _readSystemFileAndParseToJson();
-        _sortPackagesAlphabetically(packagesParsed);
         return reply.view("/templates/index.liquid", {
             version: _version,
             title: "OS Installed Packages",
