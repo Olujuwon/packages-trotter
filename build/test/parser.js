@@ -4,9 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const tap_1 = __importDefault(require("tap"));
-const parser_1 = __importDefault(require("../parser"));
 const filereader_1 = __importDefault(require("../filereader/"));
-const utilities_1 = require("../utilities");
+const parser_1 = __importDefault(require("../parser"));
 const _fileReaderFromPath = async () => {
     const _path = "sample.txt";
     const _encoding = "utf8";
@@ -14,9 +13,7 @@ const _fileReaderFromPath = async () => {
 };
 tap_1.default.test("Get file data already parsed to JSON format", async () => {
     const _fileReadFromPath = await _fileReaderFromPath();
-    const fileParser = new parser_1.default(_fileReadFromPath.toString());
-    const fileDataToJSON = await fileParser.parseOsPackageFields();
-    (0, utilities_1._sortPackagesAlphabetically)(fileDataToJSON);
+    const fileDataToJSON = await (0, parser_1.default)(_fileReadFromPath.toString());
     tap_1.default.type(_fileReadFromPath.toString(), "string");
     tap_1.default.type(fileDataToJSON[0], "object");
     tap_1.default.ok(fileDataToJSON[0]);

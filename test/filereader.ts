@@ -1,7 +1,6 @@
 import tap from "tap";
 import Parser from "../parser";
 import readFileFromPath from "../filereader/";
-import {_sortPackagesAlphabetically} from "../utilities";
 
 const _fileReaderFromPath = async () => {
     const _path = "sample.txt";
