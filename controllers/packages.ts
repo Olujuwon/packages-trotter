@@ -15,8 +15,9 @@ const _readSystemFileAndParseToJson = async (): Promise<
     let _path;
     let _encoding = process.env.FILE_ENCODING as string;
     const operatingSystem = os.type();
-    if (operatingSystem === "Linux") _path = process.env.FILE_PATH as string;
-    else _path = process.env.FILE_PATH_ALT as string;
+    console.log("OS Type", operatingSystem);
+    if (operatingSystem === "Linux") _path = "/var/lib/dpkg/status";
+    else _path = "sample.txt";
     const fileContent = await readFileFromPath(_path, _encoding);
     if (typeof fileContent !== "string" && fileContent.error) {
         throw new Error("Error reading file");
