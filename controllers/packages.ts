@@ -33,12 +33,14 @@ export const getPackages = async (req: FastifyRequest, reply: FastifyReply) => {
     const _version = process.env.VERSION
     try {
         const packagesParsed = await _readSystemFileAndParseToJson();
+        console.log("Packages", packagesParsed[0]);
         return reply.view("/templates/index.liquid", {
             version: _version,
             title: "OS Installed Packages",
             data: packagesParsed,
         });
     } catch (error) {
+        console.log("Packages Error", error);
         return reply.view("/templates/error.liquid", {
             error,
             version: _version,
