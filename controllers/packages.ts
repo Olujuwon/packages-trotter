@@ -20,7 +20,7 @@ const _readSystemFileAndParseToJson = async (): Promise<
     else _path = "sample.txt";
     const fileContent = await readFileFromPath(_path, _encoding);
     if (typeof fileContent !== "string" && fileContent.error) {
-        throw new Error("Error reading file");
+        throw new Error("Error reading file", fileContent.error);
     }
     return await parseOsPackageFields(fileContent.toString());
 };

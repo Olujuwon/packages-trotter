@@ -23,7 +23,7 @@ const _readSystemFileAndParseToJson = async () => {
         _path = "sample.txt";
     const fileContent = await (0, filereader_1.default)(_path, _encoding);
     if (typeof fileContent !== "string" && fileContent.error) {
-        throw new Error("Error reading file");
+        throw new Error("Error reading file", fileContent.error);
     }
     return await (0, parser_1.default)(fileContent.toString());
 };
