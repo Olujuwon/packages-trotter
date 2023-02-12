@@ -47,23 +47,36 @@ const searchAndExtractText = (regExp, flag, textToSearch) => {
  * Searches parsed packages JSON checking, if a package A's name is found in another package B's
  * depends field, package B is added to package A's reverseDepends field
  *
- * @returns Promise<void>
+ * @returns Array<string>
  */
-const parsePackageReverseDependencies = async (osPackagesParsedToJson) => {
-    for (let i = 0; i < osPackagesParsedToJson.length; i++) {
-        const currentPackage = osPackagesParsedToJson[i];
-        const currentPackageReverseDependencies = [];
-        osPackagesParsedToJson.forEach((osPackage, index) => {
-            const { name, depends } = osPackage;
-            if (depends === "")
-                return;
-            if (depends.includes(currentPackage.name))
-                currentPackageReverseDependencies.push(name);
-        });
-        currentPackage.reverseDepends =
-            currentPackageReverseDependencies.join(" , ");
+const findReverseDependencies = (currentPackage, osPackagesParsedToJson, visited) => {
+    const currentPackageReverseDependencies = [];
+    if (visited.has(currentPackage.name)) {
+        return [];
     }
-    return osPackagesParsedToJson;
+    visited.add(currentPackage.name);
+    osPackagesParsedToJson.forEach((osPackage) => {
+        const { name, depends } = osPackage;
+        if (depends === "")
+            return;
+        if (depends.includes(currentPackage.name)) {
+            currentPackageReverseDependencies.push(name);
+            currentPackageReverseDependencies.push(...findReverseDependencies(osPackage, osPackagesParsedToJson, visited));
+        }
+    });
+    return currentPackageReverseDependencies;
+};
+/**
+ * Loops through json format of OS packages and finds the reverse dependencies of each OS package
+ *
+ * @returns Array<IParsedJsonObject>
+ */
+const parseOsPackagesReverseDeps = (osPackagesParsedToJson) => {
+    const visited = new Set();
+    return osPackagesParsedToJson.map((osPackage) => {
+        osPackage.reverseDepends = findReverseDependencies(osPackage, osPackagesParsedToJson, visited).join(", ");
+        return osPackage;
+    });
 };
 /**
  * Splits fileData into array of strings, search and extract texts corresponding to specified
@@ -71,7 +84,7 @@ const parsePackageReverseDependencies = async (osPackagesParsedToJson) => {
  *
  * @returns Promise<void>
  */
-const parseOsPackageFields = async (fileData) => {
+const parseOsPackageFields = (fileData) => {
     let osPackagesParsedToJson = [];
     const osPackagestringToArray = fileData.split("\n\n");
     osPackagestringToArray.forEach((osPackage, index) => {
@@ -83,10 +96,10 @@ const parseOsPackageFields = async (fileData) => {
             name: packageName,
             description: packageDescription,
             depends: dependencies,
-            reverseDepends: "",
+            reverseDepends: ""
         });
     });
-    const osPackagesWithReverseDependencies = await parsePackageReverseDependencies(osPackagesParsedToJson);
+    const osPackagesWithReverseDependencies = parseOsPackagesReverseDeps(osPackagesParsedToJson);
     return (0, exports.sortPackagesAlphabetically)(osPackagesWithReverseDependencies);
 };
 exports.default = parseOsPackageFields;

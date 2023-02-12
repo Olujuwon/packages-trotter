@@ -15,14 +15,13 @@ const _readSystemFileAndParseToJson = async (): Promise<
     let _path;
     let _encoding = process.env.FILE_ENCODING as string;
     const operatingSystem = os.type();
-    console.log("OS Type", operatingSystem);
     if (operatingSystem === "Linux") _path = "sample.txt";
     else _path = "sample.txt";
     const fileContent = await readFileFromPath(_path, _encoding);
     if (typeof fileContent !== "string" && fileContent.error) {
         throw new Error("Error reading file", fileContent.error);
     }
-    return await parseOsPackageFields(fileContent.toString());
+    return parseOsPackageFields(fileContent.toString());
 };
 /**
  * The handler method for index page, fetches OS packages, parses and display data in the UI
@@ -33,7 +32,6 @@ export const getPackages = async (req: FastifyRequest, reply: FastifyReply) => {
     const _version = process.env.VERSION
     try {
         const packagesParsed = await _readSystemFileAndParseToJson();
-        console.log("Packages", packagesParsed[0]);
         return reply.view("/templates/index.liquid", {
             version: _version,
             title: "OS Installed Packages",
