@@ -10,7 +10,7 @@ const _fileReaderFromPath = async () => {
 
 tap.test("Get file data already parsed to JSON format", async () => {
     const _fileReadFromPath = await _fileReaderFromPath();
-    const fileDataToJSON = await parseOsPackageFields(_fileReadFromPath.toString());
+    const fileDataToJSON = parseOsPackageFields(_fileReadFromPath.toString());
     tap.type(_fileReadFromPath.toString(), "string");
     tap.type(fileDataToJSON[0], "object");
     tap.ok(fileDataToJSON[0]);
